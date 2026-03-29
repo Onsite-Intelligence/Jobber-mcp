@@ -1,0 +1,28 @@
+{
+  "name": "jobber-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for the Jobber GraphQL API — standalone or integrated with FirstVisitAI",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "jobber-mcp-server": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "start:http": "TRANSPORT=http node dist/index.js",
+    "dev:http": "TRANSPORT=http tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "express": "^5.1.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
