@@ -1,18 +1,45 @@
 {
-  "name": "jobber-mcp-server",
+  "name": "@onsite-intelligence/jobber-mcp",
   "version": "1.0.0",
-  "description": "MCP server for the Jobber GraphQL API — standalone or integrated with FirstVisitAI",
+  "description": "MCP server for the Jobber field service management API — client management, job scheduling, quoting, invoicing, and service request intake",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "jobber-mcp-server": "dist/index.js"
+    "jobber-mcp": "dist/index.js"
   },
+  "files": [
+    "dist/",
+    "scripts/",
+    ".env.example",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "start:http": "TRANSPORT=http node dist/index.js",
     "dev:http": "TRANSPORT=http tsx src/index.ts"
+  },
+  "keywords": [
+    "mcp",
+    "jobber",
+    "field-service",
+    "home-services",
+    "hvac",
+    "plumbing",
+    "ai-agent",
+    "claude",
+    "model-context-protocol"
+  ],
+  "author": "Onsite Intelligence Inc.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Onsite-Intelligence/Jobber-mcp.git"
+  },
+  "homepage": "https://github.com/Onsite-Intelligence/Jobber-mcp",
+  "bugs": {
+    "url": "https://github.com/Onsite-Intelligence/Jobber-mcp/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",

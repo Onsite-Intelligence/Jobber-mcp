@@ -2,8 +2,12 @@
  * Jobber OAuth2 token management.
  *
  * Handles access token storage, automatic refresh on 401,
- * and logging of refreshed tokens for manual persistence.
+ * and persistence of refreshed tokens back to the .env file.
  */
+
+import { readFileSync, writeFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 
 export interface TokenSet {
   accessToken: string;
@@ -14,6 +18,10 @@ export interface TokenSet {
 let currentTokens: TokenSet | null = null;
 
 const JOBBER_TOKEN_URL = "https://api.getjobber.com/api/oauth/token";
+
+// Resolve .env path relative to project root (works from src/ and dist/)
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ENV_PATH = resolve(__dirname, "..", "..", ".env");
 
 export function loadTokensFromEnv(): TokenSet {
   const accessToken = process.env.JOBBER_ACCESS_TOKEN;
@@ -84,10 +92,11 @@ export async function refreshAccessToken(): Promise<TokenSet> {
     expiresAt: Date.now() + data.expires_in * 1000,
   };
 
-  // Log refreshed tokens so the user can persist them
-  console.error(
-    "[jobber-mcp] Token refreshed. New tokens (save these if you want persistence):"
-  );
+  // Persist refreshed tokens to .env file
+  persistTokensToEnv(data.access_token, data.refresh_token);
+
+  // Also log to stderr as a fallback
+  console.error("[jobber-mcp] Token refreshed successfully.");
   console.error(`  JOBBER_ACCESS_TOKEN=${data.access_token}`);
   console.error(`  JOBBER_REFRESH_TOKEN=${data.refresh_token}`);
 
@@ -100,4 +109,30 @@ export async function refreshAccessToken(): Promise<TokenSet> {
 export function isTokenExpiringSoon(): boolean {
   const tokens = getTokens();
   return Date.now() > tokens.expiresAt - 5 * 60 * 1000;
+}
+
+/**
+ * Write refreshed tokens back to the .env file so they survive restarts.
+ * Falls back to stderr-only if the file doesn't exist or isn't writable.
+ */
+function persistTokensToEnv(accessToken: string, refreshToken: string): void {
+  try {
+    let content = readFileSync(ENV_PATH, "utf-8");
+
+    content = content.replace(
+      /^JOBBER_ACCESS_TOKEN=.*$/m,
+      `JOBBER_ACCESS_TOKEN=${accessToken}`
+    );
+    content = content.replace(
+      /^JOBBER_REFRESH_TOKEN=.*$/m,
+      `JOBBER_REFRESH_TOKEN=${refreshToken}`
+    );
+
+    writeFileSync(ENV_PATH, content, "utf-8");
+    console.error("[jobber-mcp] Tokens persisted to .env file.");
+  } catch {
+    console.error(
+      "[jobber-mcp] Warning: could not write tokens to .env file — tokens logged to stderr only."
+    );
+  }
 }

@@ -141,7 +141,7 @@ query GetClient($id: EncodedId!) {
     phones { number description primary }
     emails { address description primary }
     billingAddress { street1 street2 city province postalCode country }
-    tags
+    tags { nodes { label } }
     createdAt
     clientProperties(first: 10) {
       nodes {
