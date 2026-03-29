@@ -107,8 +107,13 @@ Once connected, just talk to Claude naturally:
 1. Create a developer account at [developer.getjobber.com](https://developer.getjobber.com/)
 2. Create a new app — select the scopes your use case needs (clients, jobs, quotes, invoices, scheduling)
 3. Note your **Client ID** and **Client Secret** from the app settings
-4. Complete the OAuth2 authorization flow to obtain your **Access Token** and **Refresh Token**
-5. If you have an existing Jobber integration, the `scripts/extract-tokens.py` utility can help extract tokens
+4. Complete the OAuth2 authorization flow to get your tokens:
+   - Redirect a Jobber account owner to `https://api.getjobber.com/api/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT&response_type=code`
+   - After they authorize, Jobber redirects back with a `?code=` parameter
+   - Exchange the code for tokens: `POST https://api.getjobber.com/api/oauth/token` with `grant_type=authorization_code`, your client ID/secret, and the code
+   - The response contains your `access_token` and `refresh_token`
+
+> **Note:** The `scripts/extract-tokens.py` script is for pulling tokens from an existing FirstVisitAI database — it does not handle the OAuth flow itself.
 
 ## Install from Source
 
