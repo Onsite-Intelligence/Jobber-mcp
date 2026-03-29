@@ -1,6 +1,6 @@
 {
   "name": "jobber-mcp-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for the Jobber field service management API — client management, job scheduling, quoting, invoicing, and service request intake",
   "type": "module",
   "main": "dist/index.js",

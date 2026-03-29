@@ -17,16 +17,27 @@ With this server running, an AI agent can search for clients, create jobs, check
 **Claude Code (recommended):**
 
 ```bash
-npm install -g jobber-mcp-server
+claude mcp add jobber --scope user \
+  -e JOBBER_CLIENT_ID=your_id \
+  -e JOBBER_CLIENT_SECRET=your_secret \
+  -e JOBBER_ACCESS_TOKEN=your_token \
+  -e JOBBER_REFRESH_TOKEN=your_refresh \
+  -- npx -y jobber-mcp-server
 ```
 
-Then add to your project's `.mcp.json`:
+**Claude Desktop:**
+
+Add to your `claude_desktop_config.json`:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
   "mcpServers": {
     "jobber": {
-      "command": "jobber-mcp",
+      "command": "npx",
+      "args": ["-y", "jobber-mcp-server"],
       "env": {
         "JOBBER_CLIENT_ID": "your_client_id",
         "JOBBER_CLIENT_SECRET": "your_client_secret",
@@ -38,7 +49,14 @@ Then add to your project's `.mcp.json`:
 }
 ```
 
-That's it — Claude will pick up the Jobber tools automatically.
+## Example Conversations
+
+Once connected, just talk to Claude naturally:
+
+- **"Search for client John Smith"** — calls `jobber_search_clients` to find matching clients by name
+- **"What jobs are scheduled for tomorrow?"** — calls `jobber_get_schedule` to pull tomorrow's visits and assignments
+- **"Create a quote for Sarah at 123 Main St — furnace inspection, $150"** — calls `jobber_create_client` + `jobber_create_quote` to set up the client and draft the estimate
+- **"Show me all unpaid invoices"** — calls `jobber_list_invoices` filtered to outstanding balances
 
 ## Available Tools
 
@@ -84,7 +102,15 @@ That's it — Claude will pick up the Jobber tools automatically.
 | `jobber_list_invoices` | List invoices with status and amounts |
 | `jobber_get_invoice` | Get full invoice details with line items |
 
-## Quick Start
+## Getting Jobber API Credentials
+
+1. Create a developer account at [developer.getjobber.com](https://developer.getjobber.com/)
+2. Create a new app — select the scopes your use case needs (clients, jobs, quotes, invoices, scheduling)
+3. Note your **Client ID** and **Client Secret** from the app settings
+4. Complete the OAuth2 authorization flow to obtain your **Access Token** and **Refresh Token**
+5. If you have an existing Jobber integration, the `scripts/extract-tokens.py` utility can help extract tokens
+
+## Install from Source
 
 ### Prerequisites
 
@@ -92,13 +118,7 @@ That's it — Claude will pick up the Jobber tools automatically.
 - A [Jobber developer app](https://developer.getjobber.com/)
 - OAuth2 credentials (client ID, client secret, access token, refresh token)
 
-### Install from npm
-
-```bash
-npm install -g jobber-mcp-server
-```
-
-### Or clone and build
+### Clone and build
 
 ```bash
 git clone https://github.com/Onsite-Intelligence/Jobber-mcp.git
@@ -124,27 +144,7 @@ JOBBER_ACCESS_TOKEN=your_access_token
 JOBBER_REFRESH_TOKEN=your_refresh_token
 ```
 
-### Connect to Claude Code
-
-Add to your project's `.mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "jobber": {
-      "command": "jobber-mcp",
-      "env": {
-        "JOBBER_CLIENT_ID": "your_client_id",
-        "JOBBER_CLIENT_SECRET": "your_client_secret",
-        "JOBBER_ACCESS_TOKEN": "your_access_token",
-        "JOBBER_REFRESH_TOKEN": "your_refresh_token"
-      }
-    }
-  }
-}
-```
-
-Or if running from source:
+### Connect to Claude Code (from source)
 
 ```json
 {
@@ -152,7 +152,7 @@ Or if running from source:
     "jobber": {
       "command": "node",
       "args": ["dist/index.js"],
-      "cwd": "/path/to/jobber-mcp",
+      "cwd": "/path/to/Jobber-mcp",
       "env": {
         "JOBBER_CLIENT_ID": "your_client_id",
         "JOBBER_CLIENT_SECRET": "your_client_secret",
