@@ -1,4 +1,8 @@
-# @onsite-intelligence/jobber-mcp
+# jobber-mcp-server
+
+[![npm version](https://img.shields.io/npm/v/jobber-mcp-server)](https://www.npmjs.com/package/jobber-mcp-server)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/node-18%2B-brightgreen)](https://nodejs.org)
 
 MCP server for the [Jobber](https://getjobber.com) field service management API — client management, job scheduling, quoting, invoicing, and service request intake. Built for AI agents working in home services.
 
@@ -7,6 +11,34 @@ MCP server for the [Jobber](https://getjobber.com) field service management API 
 This is a "driver" that lets any MCP-compatible AI assistant (Claude, etc.) read and write data in a Jobber account. [MCP (Model Context Protocol)](https://modelcontextprotocol.io) is an open standard that gives AI models a structured way to call external tools — think of it like a USB port between an AI and your business software.
 
 With this server running, an AI agent can search for clients, create jobs, check the schedule, send quotes, and more — all through natural conversation.
+
+## Quick Install
+
+**Claude Code (recommended):**
+
+```bash
+npm install -g jobber-mcp-server
+```
+
+Then add to your project's `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "jobber": {
+      "command": "jobber-mcp",
+      "env": {
+        "JOBBER_CLIENT_ID": "your_client_id",
+        "JOBBER_CLIENT_SECRET": "your_client_secret",
+        "JOBBER_ACCESS_TOKEN": "your_access_token",
+        "JOBBER_REFRESH_TOKEN": "your_refresh_token"
+      }
+    }
+  }
+}
+```
+
+That's it — Claude will pick up the Jobber tools automatically.
 
 ## Available Tools
 
@@ -63,7 +95,7 @@ With this server running, an AI agent can search for clients, create jobs, check
 ### Install from npm
 
 ```bash
-npm install -g @onsite-intelligence/jobber-mcp
+npm install -g jobber-mcp-server
 ```
 
 ### Or clone and build
